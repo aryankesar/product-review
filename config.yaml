@@ -1,0 +1,42 @@
+# ---------- Data ----------
+data:
+  full_path: data/flipkart_product.csv      # full Kaggle dataset (not in repo, see README)
+  sample_path: data/sample_reviews.csv      # small sample shipped with the repo (fallback)
+
+# ---------- Classical ML baseline (TF-IDF + LinearSVC) ----------
+model_path: models/sentiment_svm.joblib
+training:
+  test_size: 0.2
+  random_state: 42
+  tfidf:
+    max_features: 20000
+    ngram_range: [1, 2]      # bigrams capture negation ("not good")
+    sublinear_tf: true
+
+# ---------- LLM ----------
+llm:
+  provider: gemini                   # "gemini" = free tier, no card (Google AI Studio) | "anthropic" = paid
+  model: gemini-3.1-flash-lite       # if you get a "not found" error, check the model list in AI Studio
+  fallback_models: [gemini-3.5-flash-lite, gemini-3.5-flash]   # tried automatically if the model is unavailable
+  max_tokens: 2048
+  temperature: 0.0                   # deterministic output for classification/extraction
+  parse_attempts: 2                  # extra attempts if the model returns invalid/unexpected JSON
+  min_seconds_between_calls: 13      # free tiers allow only a few requests/minute (set 0 for paid plans)
+  rate_limit_retries: 4              # retries (with growing waits) when the API says "too many requests"
+  retry_wait_seconds: 20
+  max_retries: 3                     # anthropic SDK-level retries (unused for gemini)
+  cache_dir: .cache/llm              # identical requests are answered from disk (saves quota)
+  # To use Claude instead:  provider: anthropic , model: claude-haiku-4-5-20251001 , min_seconds_between_calls: 0
+
+# ---------- Tasks ----------
+prompts_path: prompts/prompts.yaml
+
+compare:
+  sample_size: 150       # reviews sampled from the held-out test split (balanced by class); 15 API calls
+  batch_size: 10         # reviews per LLM call
+  output_path: reports/compare_results.csv   # row-by-row results (git-ignored)
+  report_path: reports/compare_report.txt    # summary numbers with confidence intervals (committed)
+
+summarize:
+  max_reviews: 45        # reviews sent to the LLM per product
+  max_chars: 300         # truncate each review to keep the prompt small

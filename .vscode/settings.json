@@ -1,0 +1,7 @@
+{
+    "chat.tools.terminal.autoApprove": {
+        "Test-Path": true,
+        "git rev-parse": true,
+        ".\\.venv\\Scripts\\python.exe": true
+    }
+}

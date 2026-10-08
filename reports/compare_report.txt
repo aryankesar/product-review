@@ -1,0 +1,43 @@
+Reviews compared (balanced, held-out): 150
+SVM accuracy : 0.960   (95% CI 0.915 - 0.982, n=150)
+LLM accuracy : 0.800   (95% CI 0.729 - 0.856, n=150)
+SVM/LLM agreement: 0.767
+
+--- LLM per-class report ---
+              precision    recall  f1-score   support
+
+    Negative       0.75      0.96      0.84        50
+     Neutral       0.83      0.50      0.62        50
+    Positive       0.84      0.94      0.89        50
+
+    accuracy                           0.80       150
+   macro avg       0.81      0.80      0.78       150
+weighted avg       0.81      0.80      0.78       150
+
+--- SVM per-class report ---
+              precision    recall  f1-score   support
+
+    Negative       1.00      0.98      0.99        50
+     Neutral       0.98      0.90      0.94        50
+    Positive       0.91      1.00      0.95        50
+
+    accuracy                           0.96       150
+   macro avg       0.96      0.96      0.96       150
+weighted avg       0.96      0.96      0.96       150
+
+--- LLM confusion matrix ---
+               pred Negative  pred Neutral  pred Positive
+true Negative             48             2              0
+true Neutral              16            25              9
+true Positive              0             3             47
+
+--- SVM confusion matrix ---
+               pred Negative  pred Neutral  pred Positive
+true Negative             49             1              0
+true Neutral               0            45              5
+true Positive              0             0             50
+
+Note: 'truth' is the star-rating label (4-5 Positive, 3 Neutral, 1-2 Negative). The SVM was
+trained on that labelling convention; the LLM judges the text, so disagreements are not
+automatically LLM mistakes (see reports/compare_results.csv).
+LLM API calls: 0   cache hits: 17
